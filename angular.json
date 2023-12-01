@@ -83,7 +83,6 @@
 			}
 		}
 	},
-	"defaultProject": "tnt-assignment",
 	"schematics": {
 		"@schematics/angular:component": {
 			"prefix": "app",
