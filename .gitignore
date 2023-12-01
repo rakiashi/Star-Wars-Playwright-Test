@@ -1,0 +1,8 @@
+node_modules/
+.angular
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/test-results/
+@rerun.text
+.DS_Store

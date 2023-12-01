@@ -1,0 +1,32 @@
+{
+  "testData": {
+    "pageTitle": "The Star Wars Search",
+    "notFoundText": "Not found."
+  },
+  "peoples": {
+    "LukeSkywalker": {
+      "gender": "male",
+      "birthyYear": "19BBY",
+      "eyeColor": "blue",
+      "skinColor": "fair"
+    },
+    "luke": {
+      "gender": "male",
+      "birthyYear": "19BBY",
+      "eyeColor": "blue",
+      "skinColor": "fair"
+    }
+  },
+  "planets": {
+        "Tatooine": {
+          "population": "200000",
+          "climate": "arid",
+          "gravity": "1 standard"
+        },
+        "Alderaan": {
+          "population": "2000000000",
+          "climate": "temperate",
+          "gravity": "1 standard"
+        }
+  }
+}

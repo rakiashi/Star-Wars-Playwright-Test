@@ -1,0 +1,22 @@
+{
+	"compileOnSave": true,
+	"allowSyntheticDefaultImports": true,
+	"compilerOptions": {
+		"outDir": "./dist/out-tsc",
+		"sourceMap": false,
+		"declaration": false,
+		"module": "CommonJS",
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"target": "es6",
+		"types": [ "node" ],
+		"typeRoots": ["./node_modules/@types", 
+						"./playwright/helpers/types"],
+		"lib": ["es2015", "dom"],
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+	}
+}
