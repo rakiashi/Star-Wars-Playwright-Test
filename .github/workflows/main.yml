@@ -10,19 +10,14 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v3
+        name: Build and test
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Install dependencies
-        run: npm i
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run playwright test
-        run: npm run e2e-fullregression-local-chrome-headless
-      - uses: actions/playwright-test@v3
-        with:
-          build:
-          start: npm start
+      - run: npm i
+      - run: npx playwright install --with-deps
+      - run: npm run start --if-present
+      - run: npm run e2e-fullregression-local-chrome-headless      
       - uses: actions/upload-artifact@v3
         if: always()
         with:
