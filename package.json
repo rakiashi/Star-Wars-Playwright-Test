@@ -10,6 +10,7 @@
     "lint": "ng lint",
     "clean-report": "npx ts-node playwright/helpers/init.ts",
     "e2e-fullregression-local-chrome": "BROWSER=chrome ENV=local cucumber-js --tags '@FullRegression'",
+    "e2e-fullregression-local-chrome-headless": "BROWSER=chrome ENV=local HEADLESS=true cucumber-js --tags '@FullRegression'",
     "e2e-rerun-chrome": "BROWSER=chrome ENV=local cucumber-js -p rerun test-results/rerun/@rerun.txt",
     "e2e-rerun-firefox": "BROWSER=chrome ENV=local cucumber-js -p rerun test-results/rerun/@rerun.txt",
     "e2e-smoketest-local-firefox": "BROWSER=firefox ENV=local cucumber-js --tags '@Smoke'",

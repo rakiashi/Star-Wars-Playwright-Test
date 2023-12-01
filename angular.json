@@ -83,6 +83,7 @@
 			}
 		}
 	},
+	"defaultProject": "Star-Wars-Playwright-Test",
 	"schematics": {
 		"@schematics/angular:component": {
 			"prefix": "app",
