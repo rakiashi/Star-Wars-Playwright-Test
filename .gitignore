@@ -1,8 +1,11 @@
 node_modules/
 .angular
+.vscode
 /test-results/
 /playwright-report/
 /playwright/.cache/
 /test-results/
 @rerun.text
 .DS_Store
+dist
+/playwright-report

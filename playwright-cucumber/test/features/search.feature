@@ -4,7 +4,7 @@ Feature: Search by name of a character or planet
         Given I launch star wars application
         When Verify default page content and people option is checked as a preference
 
-    @FullRegression @P1
+    @FullRegression
     Scenario: Search with full name of a character and switch to planet option you should see not found message
         When I search for people as "Luke Skywalker"
         And I see search result card shown 1

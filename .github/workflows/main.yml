@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main, master ]
 jobs:
-  test:
+  Build-and-Test:
       timeout-minutes: 60
       runs-on: ubuntu-latest
       steps:
@@ -17,14 +17,12 @@ jobs:
         run: npm i
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - run: |
-             echo "initialize locahost app"
-             npm run start
-             echo "run playwright test"
-             npm run e2e-fullregression-local-chrome-headless      
+      - name: Build and Run e2e playwright test
+        run: npm run e2e-fullregression-runner-test
+
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: Report
-          path: test-results
-          retention-days: 5
+            name: playwright-report
+            path: playwright-report/
+            retention-days: 5

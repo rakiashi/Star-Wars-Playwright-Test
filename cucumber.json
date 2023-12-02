@@ -4,10 +4,10 @@
             "snippetInterface": "async-await"
         },
         "dryRun": false,
-        "paths":["playwright/test/features"],
+        "paths":["playwright-cucumber/test/features"],
         "require": [
-            "playwright/test/steps/*.ts",
-            "playwright/helpers/hook.ts"
+            "playwright-cucumber/test/steps/*.ts",
+            "playwright-cucumber/helpers/hooks/hook.ts"
         ],
         "requireModule": [
             "ts-node/register"
@@ -25,8 +25,8 @@
         },
         "dryRun": false,
         "require": [
-            "playwright/test/steps/*.ts",
-            "playwright/helpers/hook.ts"
+            "playwright-cucumber/test/steps/*.ts",
+            "playwright-cucumber/helpers/hooks/hook.ts"
         ],
         "requireModule": [
             "ts-node/register"

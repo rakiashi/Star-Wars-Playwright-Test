@@ -1,7 +1,7 @@
 import { BeforeAll, Before, After , AfterAll, Status } from '@cucumber/cucumber';
 import {  Browser , BrowserContext } from '@playwright/test';
-import { pageFixture } from '../helpers/pageFixture';
-import { invokeBrowser } from './browser';
+import { pageFixture } from '../pageFixture';
+import { invokeBrowser } from '../browser';
 
 let browser : Browser;
 let context : BrowserContext;
