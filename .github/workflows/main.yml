@@ -17,6 +17,7 @@ jobs:
         run: npm i
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - run: xvfb-run node index.js
       - name: Build and Run e2e playwright test
         run: npm run e2e-fullregression-runner-test
 
