@@ -5,7 +5,7 @@ Playwright-e2e testing framework is integrated within the FE existing source cod
 
 Basic test steps are focused during implementing this framework which helps during debugging failed tests through report, a static locators (data-testid) has been added on source code level to minimizing acessing controls using class-names.
 
-## playwright-test-runner
+## playwright-e2e
 
       |-search-by-character.test.ts
       |-search-by-planets.test.ts
@@ -13,27 +13,22 @@ Basic test steps are focused during implementing this framework which helps duri
 
 ### **Pre-requisites**
 	node version* - >v18.16.x
-	npm init playwright -D
-	
-## Browsers tested 
-	* Chrome 
-	* Firefox
+ 
+  Install dependencies 
 
-**Note:** 
+  npm install
+
+  **Note:** 
  * The BASE_URL is configured in *env.config.json* by default test runs on local [http://localhost:4200]
  * By default test runs with workers=1 which can be configure to run parallel in future
  * You can configure ***process.env[ENV,HEADLESS,BROWSER]*** options which can be modify within the npm cmds for desire test runs
  * Test-data is also shared *integration-utils/test-data/data.json* 
 
-### Initiating the test runs locally
-
-  * *npm run start* # this cmd is to initialize the start wars app to serve locally on  # separate terminal
-  * *npm run clean-reports* # this cmd cleanups both *test-results* and *playwright-report* folders directories
-
 ### Initiating the playwright-e2e test runs locally
 
-  * *e2e-fullregression-runner-test-headless*  # this cmd clean-ups the report folders & launch webser of local app & test runs on local of playwright-test-runner tests by @Fullregression tag on chrome browser in headless mode 
-  * *e2e-fullregression-runner-test*  # this cmd clean-ups the report folders & launch webser of local app & test runs on local of playwright-test-runner tests by @Fullregression tag on chrome browser
+  * *e2e-fullregression-runner-test-headless*  # this cmd clean-ups the report folders & launch webserver of local app & test runs on local of playwright-test-runner tests by @Fullregression tag on chrome browser in headless mode 
+  * *e2e-fullregression-runner-test*  # this cmd clean-ups the report folders & launch webserver of local app & test runs on local of playwright-test-runner tests by @Fullregression tag on chrome browser
+  * *npm run clean-reports* # this cmd cleanups *playwright-report* folders directories
   
 ### Test Scenarios Covered
 
@@ -51,7 +46,7 @@ Basic test steps are focused during implementing this framework which helps duri
 
 the above scenario is failing due to an issue where after clearing the search field and clicking on to search button : : the search result is not removed and there is no not found message.
 
-### Test Report of playwright-test-runner
+### Test Report of playwright-e2e
   playwright-report
 
     |-index.html
@@ -59,6 +54,10 @@ the above scenario is failing due to an issue where after clearing the search fi
 * Latest tests report can be viewed on accessing index.html file on a browser which gives detailed information about the run
 
 * playwright-report is an default in-built report which has all the features such as screenshot & video on failure , traceview etc.
+
+## Browsers tested 
+	* Chrome 
+	* Firefox
 
 ## Github Actions
 - The github action workflow file is located in directory .github/workflows file name main.yml
