@@ -1,0 +1,36 @@
+{
+  "testData": {
+    "pageTitle": "The Star Wars Search",
+    "notFoundText": "Not found."
+  },
+  "people": {
+    "LukeSkywalker": {
+      "title":"Luke Skywalker",
+      "gender": "male",
+      "birthyYear": "19BBY",
+      "eyeColor": "blue",
+      "skinColor": "fair"
+    },
+    "LeiaOrgana": {
+      "title":"Leia Organa",
+      "gender": "female",
+      "birthyYear": "19BBY",
+      "eyeColor": "brown",
+      "skinColor": "light"
+    }
+  },
+  "planet": {
+        "Tatooine": {
+          "title":"Tatooine",
+          "population": "200000",
+          "climate": "arid",
+          "gravity": "1 standard"
+        },
+        "Alderaan": {
+          "title":"Alderaan",
+          "population": "2000000000",
+          "climate": "temperate",
+          "gravity": "1 standard"
+        }
+  }
+}

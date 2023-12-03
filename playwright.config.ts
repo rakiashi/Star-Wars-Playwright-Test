@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  globalSetup: "common/globalsetup.ts",
+  globalSetup: "integration-utils/globalsetup.ts",
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -16,9 +16,9 @@ export default defineConfig({
   projects: [
     {
       name: "playwright-test-runner",
-      testDir: "playwright-test-runner/tests",
+      testDir: "playwright-e2e/tests",
       use: {
-        browserName: "chromium",
+        browserName:"chromium",
         trace: "on-first-retry",
         headless: JSON.parse(process.env.HEADLESS),
         screenshot: "only-on-failure",

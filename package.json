@@ -8,16 +8,9 @@
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "clean-reports": "npx ts-node playwright-cucumber/helpers/hooks/init.ts",
-    "e2e-fullregression-local-chrome": "npm run clean-reports && BROWSER=chrome ENV=local HEADLESS=false cucumber-js --tags '@FullRegression'",
-    "e2e-fullregression-local-chrome-headless": "npm run clean-reports && BROWSER=chrome ENV=local HEADLESS=true cucumber-js --tags '@FullRegression'",
-    "e2e-rerun-chrome": "npm run clean-reports && BROWSER=chrome ENV=local cucumber-js -p rerun test-results/rerun/@rerun.txt",
-    "e2e-rerun-firefox": "npm run clean-reports && BROWSER=chrome ENV=local cucumber-js -p rerun test-results/rerun/@rerun.txt",
-    "e2e-smoketest-local-firefox": "npm run clean-reports && BROWSER=firefox ENV=local cucumber-js --tags '@Smoke'",
-    "e2e-fullreg-local-chrome": "concurrently --kill-others \"npm run start\" \"npm run e2e-fullreg-local-chrome\"",
-    "e2e-smoke-local-firefox": "npm run start & npm run e2e-smoke-local-firefox",
-    "e2e-fullregression-runner-test-headless": "npm run clean-reports && ENV=local HEADLESS=true npx playwright test --config=playwright.config.ts --grep=@FullRegression",
-    "e2e-fullregression-runner-test": "npm run clean-reports && ENV=local HEADLESS=false npx playwright test --config=playwright.config.ts --grep=@FullRegression"
+    "clean-reports": "npx ts-node integration-utils/types/init.ts",
+    "e2e-fullregression-runner-test-headless": "npm run clean-reports && BROWSER=chrome ENV=local HEADLESS=true npx playwright test --config=playwright.config.ts --grep=@FullRegression",
+    "e2e-fullregression-runner-test": "npm run clean-reports && ENV=local BROWSER=chrome HEADLESS=false npx playwright test --config=playwright.config.ts --grep=@FullRegression"
   },
   "private": true,
   "dependencies": {
@@ -41,7 +34,6 @@
     "@angular/cli": "^16.0.0",
     "@angular/compiler-cli": "16.0.0",
     "@angular/language-service": "16.0.0",
-    "@cucumber/cucumber": "^10.0.1",
     "@playwright/test": "^1.40.1",
     "@types/fs-extra": "^11.0.4",
     "@types/jasmine": "^4.3.1",

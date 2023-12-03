@@ -1,8 +1,0 @@
-{
-    "git.ignoreLimitWarning": true,
-    
-      "cucumberautocomplete.steps": [
-            "playwright-cucumber/test/steps/*.ts"
-        ],
-        "cucumberautocomplete.strictGherkinCompletion": true
-}
