@@ -26,8 +26,8 @@ Basic test steps are focused during implementing this framework which helps duri
 
 ### Initiating the playwright-e2e test runs locally
 
-  * *e2e-fullregression-runner-test-headless*  # this cmd clean-ups the report folders & launch webserver of local app & test runs on local of playwright-test-runner tests by @Fullregression tag on chrome browser in headless mode 
-  * *e2e-fullregression-runner-test*  # this cmd clean-ups the report folders & launch webserver of local app & test runs on local of playwright-test-runner tests by @Fullregression tag on chrome browser
+  * *npm run e2e-fullregression-runner-test-headless*  # this cmd clean-ups the report folders & launch webserver of local app & test runs on local of playwright-test-runner tests by @Fullregression tag on chrome browser in headless mode 
+  * *npm run e2e-fullregression-runner-test*  # this cmd clean-ups the report folders & launch webserver of local app & test runs on local of playwright-test-runner tests by @Fullregression tag on chrome browser
   * *npm run clean-reports* # this cmd cleanups *playwright-report* folders directories
   
 ### Test Scenarios Covered
