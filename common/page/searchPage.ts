@@ -62,7 +62,7 @@ export class SearchPage {
   }
 
   public async visit() {
-    await this.page.waitForTimeout(3000);
+    await this.page.waitForTimeout(5000); // this is to wait for local app to stable for github ci
     await this.page.goto(ConfigReader.getEnvVars().BASE_URL);
     await this.pageHeader().isVisible();
   }
