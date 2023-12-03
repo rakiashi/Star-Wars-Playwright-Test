@@ -9,17 +9,10 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 1,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html', { open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    // Base URL to use in actions like `await page.goto('/')`.
-    baseURL: 'http://localhost:4200',
-
-    // Collect trace when retrying the failed test.
-    trace: 'on-first-retry',
-  },
   projects: [
     {
       name: "playwright-test-runner",
@@ -27,7 +20,7 @@ export default defineConfig({
       use: {
         browserName: "chromium",
         trace: "on-first-retry",
-        headless: true,
+        headless: JSON.parse(process.env.HEADLESS),
         screenshot: "only-on-failure",
         video: "retain-on-failure",
         viewport: { width: 1920, height: 1080 },

@@ -7,6 +7,15 @@ import searchLocators from '../../../common/locators/searchLocators';
 
 setDefaultTimeout(6*1000)
 
+
+interface Planet {
+    Population: string;
+    Climate: string;
+    Gravity: string;
+  }
+
+  let asteroid: Planet[];
+
 Then('Verify details of search results from below table', async function (dataTable) {
     await locatorHandler.isElementDisplayed(searchLocators.cardBodyByIndex(2));
     const expectedCardTitle = dataTable.rows()[0];
@@ -17,4 +26,18 @@ Then('Verify details of search results from below table', async function (dataTa
         const actualValue = (await pageFixture.page.locator(searchLocators.cardRowValueByIndex(row,1)).textContent()).trim();
         expect(actualValue.trim()).toEqual(cardList[1]);
     }
+});
+
+
+Then(/Verify details of search results of planet from below table/, async function (dataTable) {
+    await locatorHandler.isElementDisplayed(searchLocators.cardBodyByIndex(2));
+    asteroid = dataTable.hashes();
+    for (const value of asteroid) {
+        const population = (await pageFixture.page.locator(searchLocators.cardFirstRowByIndex(1)).textContent()).trim();
+        expect(population.trim()).toEqual(value.Population);
+        const climate = (await pageFixture.page.locator(searchLocators.cardSecondRowByIndex(1)).textContent()).trim();
+        expect(climate.trim()).toEqual(value.Climate);
+        const gravity = (await pageFixture.page.locator(searchLocators.cardThirdRowByIndex(1)).textContent()).trim();
+        expect(gravity.trim()).toEqual(value.Gravity);
+      }
 });

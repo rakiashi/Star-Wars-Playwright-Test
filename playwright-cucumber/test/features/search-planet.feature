@@ -3,8 +3,8 @@ Feature: Search Planet
     Background: launching an star wars application
         Given I launch star wars application
         When Verify default page content and people option is checked as a preference
-        
-    @Smoke @FullRegression 
+
+    @Smoke @FullRegression
     Scenario: Search-Planet : Search for a start wars planet by name and verify the properties
         When I search for planet as "Tatooine"
         Then Verify details of search results from below table
@@ -13,8 +13,15 @@ Feature: Search Planet
             | Population | 200000     |
             | Climate    | arid       |
             | Gravity    | 1 standard |
-    
-     @FullRegression
-     Scenario: Search for an invalid data using ENTER Key and verify not found message
+
+    @FullRegression
+    Scenario: Search for an invalid data using ENTER Key and verify not found message
         When I search for planet as "Earth" by ENTER_KEY
         Then Verify Not Found message
+
+    @Smoke @FullRegression
+    Scenario: Search-Planet : Search for a start wars planet by name and verify its properties
+        When I search for planet as "Alderaan"
+        Then Verify details of search results of planet from below table
+            | Population | Climate   | Gravity    |
+            | 2000000000 | temperate | 1 standard |

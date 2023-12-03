@@ -16,7 +16,8 @@
     "e2e-smoketest-local-firefox": "npm run clean-reports && BROWSER=firefox ENV=local cucumber-js --tags '@Smoke'",
     "e2e-fullreg-local-chrome": "concurrently --kill-others \"npm run start\" \"npm run e2e-fullreg-local-chrome\"",
     "e2e-smoke-local-firefox": "npm run start & npm run e2e-smoke-local-firefox",
-    "e2e-fullregression-runner-test": "npm run clean-reports && ENV=local npx playwright test --config=playwright.config.ts --grep=@FullRegression"
+    "e2e-fullregression-runner-test-headless": "npm run clean-reports && ENV=local HEADLESS=true npx playwright test --config=playwright.config.ts --grep=@FullRegression",
+    "e2e-fullregression-runner-test": "npm run clean-reports && ENV=local HEADLESS=false npx playwright test --config=playwright.config.ts --grep=@FullRegression"
   },
   "private": true,
   "dependencies": {

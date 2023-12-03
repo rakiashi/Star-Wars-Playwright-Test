@@ -1,5 +1,5 @@
 import { Given, When, Then,setDefaultTimeout } from "@cucumber/cucumber";
-import data from "../test-data/data.json";
+import data from "../../../common/test-data/data.json";
 import { pageFixture } from "../../helpers/pageFixture";
 import searchPage from "../page/searchPage";
 import locatorHandler from "../../helpers/common/locator-handler";
