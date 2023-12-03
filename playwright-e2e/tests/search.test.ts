@@ -19,11 +19,9 @@ test.describe("Search by name feature of Star Wars tests @FullRegression", async
   test("Search with full name of a character and switch to planet option you should see not found message", async ({
     searchPage,
   }) => {
-    // await searchPage.searchByName("people", "Luke Skywalker", "");
     expect(searchPage.peopleRadio().isChecked()).toBeTruthy();
     await searchPage.searchField().fill("Luke Skywalker");
     await searchPage.planetRadio().click();
-    // await searchPage.notFound().isVisible();
     expect(searchPage.notFound()).toBeTruthy();
   });
 

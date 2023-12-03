@@ -4,7 +4,6 @@ import { SearchPage } from './page/searchPage'
 
 async function globalSetup() {
 
-    // const browser: Browser = await chromium.launch({ headless: true });
     const browser: Browser = await invokeBrowser(process.env.BROWSER);
     const context = await browser.newContext();
     const page: Page = await context.newPage();
