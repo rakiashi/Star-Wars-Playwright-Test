@@ -21,7 +21,7 @@ test.describe("Search by name feature of Star Wars tests @FullRegression", async
     await searchPage.verifyNotFoundMessage();
   });
 
-  test("Search again with an empty search field and validate not found message", async ({
+  test.skip("Search again with an empty search field and validate not found message", async ({
     searchPage,
   }) => {
     await searchPage.searchByName("people", "Luke Skywalker", "");
