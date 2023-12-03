@@ -1,6 +1,6 @@
 node_modules/
 .angular
-.vscode
+/.vscode
 /test-results/
 /playwright-report/
 /playwright/.cache/

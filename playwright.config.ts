@@ -28,12 +28,8 @@ export default defineConfig({
       }
     }
   ],
-  
  webServer: {
   command: 'npm run start',
   timeout: 120 * 1000,
-},
-use: {
-  baseURL: 'http://localhost:4200/',
-},
+}
 });
