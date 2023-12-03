@@ -18,7 +18,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Build and Run e2e playwright test
-        run: npm run e2e-fullregression-runner-test
+        run: e2e-fullregression-runner-test-headless
 
       - uses: actions/upload-artifact@v3
         if: always()
