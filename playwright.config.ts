@@ -2,6 +2,14 @@ import { defineConfig, devices } from "@playwright/test";
 import { getTestOptions } from "./integration-utils/env/test-options";
 
 const testOptions = getTestOptions();
+const defaultVisualMaxDiffPixelRatio = process.env.CI ? 0.05 : 0.01;
+const defaultVisualThreshold = process.env.CI ? 0.25 : 0.2;
+const visualMaxDiffPixelRatio = process.env.VISUAL_MAX_DIFF_PIXEL_RATIO
+  ? Number(process.env.VISUAL_MAX_DIFF_PIXEL_RATIO)
+  : defaultVisualMaxDiffPixelRatio;
+const visualThreshold = process.env.VISUAL_THRESHOLD
+  ? Number(process.env.VISUAL_THRESHOLD)
+  : defaultVisualThreshold;
 
 export default defineConfig({
   /* Run tests in files in parallel */
@@ -20,8 +28,8 @@ export default defineConfig({
     toHaveScreenshot: {
       animations: "disabled",
       caret: "hide",
-      maxDiffPixelRatio: 0.01,
-      threshold: 0.2,
+      maxDiffPixelRatio: visualMaxDiffPixelRatio,
+      threshold: visualThreshold,
     },
   },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

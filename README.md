@@ -137,6 +137,8 @@ The framework supports environment-driven execution:
 | API contract flag | `FEATURE_API_CONTRACT=true\|false` | `true` |
 | Performance flag | `FEATURE_PERFORMANCE=true\|false` | `false` |
 | Visual regression flag | `FEATURE_VISUAL_REGRESSION=true\|false` | `true` |
+| Visual max diff ratio | `VISUAL_MAX_DIFF_PIXEL_RATIO=0.05` | `0.01` local, `0.05` CI |
+| Visual threshold | `VISUAL_THRESHOLD=0.25` | `0.2` local, `0.25` CI |
 
 Local mocked runs use Playwright `page.route()` to fulfill SWAPI calls before the UI triggers them. Development runs use the configured real API and skip route mocks.
 
@@ -208,7 +210,8 @@ The framework uses:
 - `toHaveScreenshot()` for full page/container and component snapshots.
 - `mask` for dynamic/user-entered regions such as the search input.
 - `animations: "disabled"` and `caret: "hide"` to reduce noise.
-- `maxDiffPixelRatio: 0.01` and `threshold: 0.2` as a small tolerance for rendering differences.
+- `maxDiffPixelRatio: 0.01` and `threshold: 0.2` locally for strict developer checks.
+- `maxDiffPixelRatio: 0.05` and `threshold: 0.25` in CI to absorb Linux/macOS font rendering differences while still catching meaningful layout regressions.
 - `@Visual` tag so visual checks can run separately from fast P0 functional checks.
 
 Rules for maintaining snapshots:
