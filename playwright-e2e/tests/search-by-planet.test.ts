@@ -1,44 +1,49 @@
 import { test } from "../../integration-utils/fixtures/base.page";
-import data from "../../integration-utils/test-data/data.json";
+import { getTestOptions } from "../../integration-utils/env/test-options";
+import { swapiFixtures } from "../../integration-utils/test-data/swapi.fixtures";
 
-test.beforeEach(async ({ searchPage, context }) => {
-  context.clearCookies();
-  await searchPage.visit();
-});
+const testOptions = getTestOptions();
 
-test.describe("Search Star Wars Planet feature tests @FullRegression", async () => {
-  test("Search-Planet : Search for a start wars planet by name and verify the properties", async ({
+test.describe("P0 Star Wars planet search flows @P0 @FullRegression", () => {
+  test.beforeEach(async ({ mockSwapiSearch, searchPage }) => {
+    if (testOptions.apiMode === "mock") {
+      await mockSwapiSearch("planets", [swapiFixtures.planets.alderaan]);
+    }
+
+    await searchPage.visit();
+  });
+
+  test("searches for a planet and verifies the planet card contract", async ({
+    featureFlags,
     searchPage,
   }) => {
-    await searchPage.planetRadio().click();
-    await searchPage.planetRadio().isChecked();
-    await searchPage.searchField().fill(data.planet.Alderaan.title);
-    await searchPage.searchButton().click();
-    await searchPage.isElementDisplayed(searchPage.cardTitleByIndex(1));
-    await searchPage.expectActualContainsExpected(
-      searchPage.cardTitleByIndex(1),data.planet.Alderaan.title);
-        await searchPage.expectActualContainsExpected(
-          searchPage.cardRowValueByIndex(1,1),data.planet.Alderaan.population);
-          await searchPage.expectActualContainsExpected(
-            searchPage.cardRowValueByIndex(2,1),data.planet.Alderaan.climate);
-            await searchPage.expectActualContainsExpected(
-              searchPage.cardRowValueByIndex(3,1),data.planet.Alderaan.gravity);    
-  });
+    test.skip(!featureFlags.planetSearch, "Planet search feature flag is disabled.");
 
-  test("Search-Planet : Search for an invalid data using ENTER Key and verify not found message", async ({
+    await searchPage.searchPlanets("Alderaan");
+
+    await searchPage.planets.expectCardToMatch(0, {
+      name: "Alderaan",
+      population: "2000000000",
+      climate: "temperate",
+      gravity: "1 standard",
+    });
+  });
+});
+
+test.describe("P1 Star Wars planet search negative flows @P1 @FullRegression", () => {
+  test("shows not found for an unknown planet search", async ({
+    featureFlags,
+    mockSwapiEmptySearch,
     searchPage,
   }) => {
-    await searchPage.planetRadio().click();
-    await searchPage.searchField().fill('EARTH');
-    await searchPage.searchButton().press('Enter');
-    await searchPage.notFound().isVisible();
-  });
+    test.skip(!featureFlags.negativeSearch, "Negative search feature flag is disabled.");
 
-});
-  
-test.afterEach(async ({ page }, testInfo) => {
-    console.log(`Finished ${testInfo.title} with status ${testInfo.status}`);
-  
-    if (testInfo.status !== testInfo.expectedStatus)
-      console.log(`Did not run as expected, ended up at ${page.url()}`);
+    if (testOptions.apiMode === "mock") {
+      await mockSwapiEmptySearch("planets");
+    }
+
+    await searchPage.visit();
+    await searchPage.searchPlanets("Earth");
+    await searchPage.notFoundMessage.expectVisible();
   });
+});

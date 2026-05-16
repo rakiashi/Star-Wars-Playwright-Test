@@ -1,28 +1,120 @@
-name: Start Wars Playwright Tests
+name: Star Wars Test Gates
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
-jobs:
-  Build-and-Test:
-      timeout-minutes: 60
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install dependencies
-        run: npm i
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Build and Run e2e playwright test
-        run: npm run e2e-fullregression-runner-test-headless
+    branches: [main, master]
 
-      - uses: actions/upload-artifact@v3
+jobs:
+  unit-component:
+    name: Angular Unit and Component Tests
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  p0-ui-mocked:
+    name: Playwright P0 UI Mocked
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e:p0
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
-            name: playwright-report
-            path: playwright-report/
-            retention-days: 5
+          name: playwright-p0-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  accessibility:
+    name: Playwright Accessibility
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock --grep=@A11y
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-a11y-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  api-contract:
+    name: API Contract
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run api:contract
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-contract-report
+          path: playwright-report/
+          retention-days: 7
+
+  visual:
+    name: Visual Regression
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run visual
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-report-and-diffs
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  performance-smoke:
+    name: K6 Performance Smoke
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: grafana/setup-k6-action@v1
+      - run: npm run perf:k6

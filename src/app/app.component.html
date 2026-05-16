@@ -9,6 +9,10 @@
 
 			<div *ngIf="isLoading">Loading...</div>
 
+			<div *ngIf="errorMessage" data-testid="api-error">
+				{{ errorMessage }}
+			</div>
+
 			<div *ngIf="isNotFound(searchResult, isLoading)" data-testid="not-found">
 				Not found.
 			</div>

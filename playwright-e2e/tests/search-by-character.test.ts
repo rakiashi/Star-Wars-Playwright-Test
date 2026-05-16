@@ -1,44 +1,53 @@
 import { test } from "../../integration-utils/fixtures/base.page";
-import data from "../../integration-utils/test-data/data.json";
+import { getTestOptions } from "../../integration-utils/env/test-options";
+import { swapiFixtures } from "../../integration-utils/test-data/swapi.fixtures";
 
-test.beforeEach(async ({ searchPage, context }) => {
-  context.clearCookies();
-  await searchPage.visit();
-});
+const testOptions = getTestOptions();
 
-test.describe("Search Start Wars Character feature tests @FullRegression", async () => {
-  test("Search-Character : Search for a start wars character by name and should verify the properties", async ({
-    searchPage,
-  }) => {
-    await searchPage.peopleRadio().isChecked();
-    await searchPage.searchField().fill(data.people.LukeSkywalker.title);
-    await searchPage.searchButton().press('Enter');
-    await searchPage.isElementDisplayed(searchPage.cardTitleByIndex(1));
-    await searchPage.expectActualContainsExpected(
-      searchPage.cardTitleByIndex(1),data.people.LukeSkywalker.title);
-        await searchPage.expectActualContainsExpected(
-          searchPage.cardRowValueByIndex(1,1),data.people.LukeSkywalker.gender);
-          await searchPage.expectActualContainsExpected(
-            searchPage.cardRowValueByIndex(2,1),data.people.LukeSkywalker.birthyYear);
-            await searchPage.expectActualContainsExpected(
-              searchPage.cardRowValueByIndex(3,1),data.people.LukeSkywalker.eyeColor);    
-              await searchPage.expectActualContainsExpected(
-                searchPage.cardRowValueByIndex(4,1),data.people.LukeSkywalker.skinColor);    
+test.describe("P0 Star Wars character search flows @P0 @FullRegression", () => {
+  test.beforeEach(async ({ mockSwapiSearch, searchPage }) => {
+    if (testOptions.apiMode === "mock") {
+      await mockSwapiSearch("people", [swapiFixtures.people.lukeSkywalker]);
+    }
+
+    await searchPage.visit();
   });
 
-  test("Search-Character : Search for an invalid search text and verify not found message", async ({
+  test("searches for a character and verifies the character card contract", async ({
+    featureFlags,
     searchPage,
   }) => {
-    await searchPage.peopleRadio().isChecked();
-    await searchPage.searchField().fill('no name');
-    await searchPage.searchButton().click();
-    await searchPage.notFound().isVisible();
+    test.skip(!featureFlags.peopleSearch, "People search feature flag is disabled.");
+
+    await searchPage.searchPeople("Luke Skywalker");
+
+    await searchPage.characters.expectCardToMatch(0, {
+      name: "Luke Skywalker",
+      gender: "male",
+      birthYear: "19BBY",
+      eyeColor: "blue",
+      skinColor: "fair",
+    });
   });
 });
 
-test.afterEach(async ({ page }, testInfo) => {
-    console.log(`Finished ${testInfo.title} with status ${testInfo.status}`);
-  
-    if (testInfo.status !== testInfo.expectedStatus)
-      console.log(`Did not run as expected, ended up at ${page.url()}`);
+test.describe("P1 Star Wars character search flows @P1 @FullRegression", () => {
+  test("shows matching people for a partial search", async ({
+    featureFlags,
+    mockSwapiSearch,
+    searchPage,
+  }) => {
+    test.skip(!featureFlags.peopleSearch, "People search feature flag is disabled.");
+
+    if (testOptions.apiMode === "mock") {
+      await mockSwapiSearch("people", [
+        swapiFixtures.people.lukeSkywalker,
+        swapiFixtures.people.leiaOrgana,
+      ]);
+    }
+
+    await searchPage.visit();
+    await searchPage.searchPeople("Skywalker");
+    await searchPage.characters.expectNameContains(0, "Skywalker");
   });
+});

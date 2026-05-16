@@ -1,16 +1,60 @@
-describe('search form test cases', () => {
-	it('should be able to select planet radio');
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
+import { SearchFormComponent } from './search-form.component';
 
-	it('should be able to select character radio');
+describe('SearchFormComponent', () => {
+  let fixture: ComponentFixture<SearchFormComponent>;
+  let router: jasmine.SpyObj<Router>;
 
-	it('should not be able to search with empty text');
+  beforeEach(async () => {
+    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
-	it('should send the correct get request using the text');
+    await TestBed.configureTestingModule({
+      declarations: [SearchFormComponent],
+      imports: [ReactiveFormsModule],
+      providers: [
+        { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: { queryParams: of({}) } },
+      ],
+    }).compileComponents();
 
-	it('should be able to search by hiting enter from the keyboard');
+    fixture = TestBed.createComponent(SearchFormComponent);
+    fixture.detectChanges();
+  });
 
-	it('should be able to search by clicking on submit');
+  it('should select people by default', () => {
+    expect(fixture.componentInstance.searchForm.value.searchType).toBe('people');
+  });
 
-	it('should be able to select planet radio from the keyboard');
-	it('should be able to select character radio from the keyboard');
+  it('should be able to select planet radio', () => {
+    fixture.componentInstance.searchForm.patchValue({ searchType: 'planets' });
+
+    expect(fixture.componentInstance.searchForm.value.searchType).toBe('planets');
+  });
+
+  it('should not search with empty text', () => {
+    fixture.componentInstance.searchForm.patchValue({ query: '' });
+
+    fixture.componentInstance.search();
+
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should navigate with the correct query params when submit is valid', () => {
+    fixture.componentInstance.searchForm.setValue({
+      searchType: 'people',
+      query: 'Luke Skywalker',
+    });
+
+    fixture.componentInstance.search();
+
+    expect(router.navigate).toHaveBeenCalledWith([], {
+      queryParams: {
+        searchType: 'people',
+        query: 'Luke Skywalker',
+      },
+    });
+  });
 });

@@ -1,8 +1,8 @@
-<div class="card">
-	<div class="card-body" data-testid="card-body">
+<div class="card" data-testid="search-form">
+	<div class="card-body">
 		<form [formGroup]="searchForm" (ngSubmit)="search()">
 			<div class="form-row align-items-center">
-				<div class="col-auto">
+				<div class="col-auto" *ngIf="features.peopleSearch">
 					<div class="form-check mb-2">
 						<input
 							formControlName="searchType"
@@ -15,7 +15,7 @@
 					</div>
 				</div>
 
-				<div class="col-auto">
+				<div class="col-auto" *ngIf="features.planetSearch">
 					<div class="form-check mb-2">
 						<input
 							formControlName="searchType"

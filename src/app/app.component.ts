@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   searchType: string;
   searchResult: any[];
   isLoading: boolean;
+  errorMessage: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -26,16 +27,24 @@ export class AppComponent implements OnInit {
       const {searchType, query} = params;
       if (searchType && query) {
         this.isLoading = true;
+        this.errorMessage = undefined;
         this.searchType = searchType;
-        this.apiService.search(searchType, query).subscribe(response => {
-          this.searchResult = response.results;
-          this.isLoading = false;
-        });
+        this.apiService.search(searchType, query).subscribe(
+          response => {
+            this.searchResult = Array.isArray(response.results) ? response.results : [];
+            this.isLoading = false;
+          },
+          () => {
+            this.searchResult = [];
+            this.errorMessage = 'Search failed.';
+            this.isLoading = false;
+          }
+        );
       }
     });
   }
 
   isNotFound(searchResult: any[], isLoading: boolean) {
-    return searchResult && !searchResult.length && !isLoading;
+    return searchResult && !searchResult.length && !isLoading && !this.errorMessage;
   }
 }

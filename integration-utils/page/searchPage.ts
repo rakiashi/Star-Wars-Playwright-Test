@@ -1,28 +1,34 @@
-import { Page, expect } from "@playwright/test";
-import data from '../test-data/data.json';
-import { ConfigReader } from "../configReader/config.reader";
+import { expect, Page } from "@playwright/test";
+import { ApiErrorComponent } from "../components/apiError.component";
+import { CharacterCardComponent } from "../components/characterCard.component";
+import { NotFoundComponent } from "../components/notFound.component";
+import { PlanetCardComponent } from "../components/planetCard.component";
+import { SearchFormComponent } from "../components/searchForm.component";
+import { getTestOptions } from "../env/test-options";
 
 export class SearchPage {
-  private page: Page;
+  readonly searchForm: SearchFormComponent;
+  readonly characters: CharacterCardComponent;
+  readonly planets: PlanetCardComponent;
+  readonly notFoundMessage: NotFoundComponent;
+  readonly apiError: ApiErrorComponent;
 
-  constructor(page: Page) {
-    this.page = page;
+  constructor(private readonly page: Page) {
+    this.searchForm = new SearchFormComponent(page);
+    this.characters = new CharacterCardComponent(page);
+    this.planets = new PlanetCardComponent(page);
+    this.notFoundMessage = new NotFoundComponent(page);
+    this.apiError = new ApiErrorComponent(page);
 
   }
 
-  /**
-   * define selector by getting from locator folder based on page 
-   */
-
-  public pageHeader = () => this.page.locator('//h1');
-  public searchField = () => this.page.locator('//input[@id="query"]');
-  public planetRadio = () => this.page.locator('//input[@id="planets"]');
-  public peopleRadio = () => this.page.locator('//input[@id="people"]');
-  public searchButton = () => this.page.locator('//button[@type="submit"]');
-  public notFound = () =>
-    this.page
-      .locator('//div[@data-testid="not-found"]')
-      .getByText(data.testData.notFoundText);
+  public pageHeader = () => this.page.getByRole("heading", { name: "The Star Wars Search" });
+  public pageRoot = () => this.page.locator(".container");
+  public searchField = () => this.searchForm.queryInput();
+  public planetRadio = () => this.searchForm.planetRadio();
+  public peopleRadio = () => this.searchForm.peopleRadio();
+  public searchButton = () => this.searchForm.searchButton();
+  public notFound = () => this.notFoundMessage.message();
 
   public cardBodyByIndex = (index?:number) => `(//div[@data-testid="card-body"])${index ? `[${index}]` : ""}`;
 
@@ -34,27 +40,24 @@ export class SearchPage {
 
 
 
-  public async visit() {
-    await this.page.waitForTimeout(5000); // this is to wait for local app to stable for github ci
-    await this.page.goto(ConfigReader.getEnvVars().BASE_URL);
-    await this.pageHeader().isVisible();
+  public async visit(path = ""): Promise<void> {
+    await this.page.goto(`${getTestOptions().baseUrl}${path}`);
+    await expect(this.pageHeader()).toBeVisible();
+  }
+
+  public async searchPeople(query: string): Promise<void> {
+    await this.searchForm.selectPeople();
+    await this.searchForm.search(query);
+  }
+
+  public async searchPlanets(query: string): Promise<void> {
+    await this.searchForm.selectPlanets();
+    await this.searchForm.search(query);
   }
 
   public async isElementDisplayed(locator: string) {
-    const element = await this.page.locator(locator);
-    await element.waitFor({
-      state: "visible",
-    });
-    if (!element) throw new Error(`Could not find selector: "${locator}"`);
+    const element = this.page.locator(locator);
+    await expect(element).toBeVisible();
     return element;
-  }
-
-  public async expectActualContainsExpected(locator: string, expectedText: string) {
-    const element = await this.page.locator(locator);
-    await element.waitFor({
-      state: "visible",
-    });
-    if (!element) throw new Error(`Could not find selector: "${locator}"`);
-    return expect((await element.textContent()).trim()).toContain(expectedText);
   }
 }

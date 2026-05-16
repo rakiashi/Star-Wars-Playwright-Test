@@ -1,55 +1,94 @@
 import { expect } from "@playwright/test";
 import { test } from "../../integration-utils/fixtures/base.page";
+import { getTestOptions } from "../../integration-utils/env/test-options";
+import { swapiFixtures } from "../../integration-utils/test-data/swapi.fixtures";
 
-test.beforeEach(async ({ searchPage, context }) => {
-  context.clearCookies();
-  await searchPage.visit();
-});
+const testOptions = getTestOptions();
 
-test.describe("Search by name feature of Star Wars tests @FullRegression", async () => {
-  test("Verify default page content and people option is checked as a preference", async ({
-    searchPage,
-  }) => {
-    await searchPage.peopleRadio().isChecked();
-    await searchPage.planetRadio().isVisible();
-    await searchPage.searchField().isVisible();
-    await searchPage.searchButton().isVisible();
+test.describe("P0 Search page smoke flows @P0 @FullRegression", () => {
+  test.beforeEach(async ({ mockSwapiSearch, searchPage }) => {
+    if (testOptions.apiMode === "mock") {
+      await mockSwapiSearch("people", [swapiFixtures.people.lukeSkywalker]);
+    }
+
+    await searchPage.visit();
   });
 
-  test("Search with full name of a character and switch to planet option you should see not found message", async ({
+  test("shows the default search experience with people selected", async ({
     searchPage,
   }) => {
-    expect(searchPage.peopleRadio().isChecked()).toBeTruthy();
-    await searchPage.searchField().fill("Luke Skywalker");
-    await searchPage.planetRadio().click();
-    expect(searchPage.notFound()).toBeTruthy();
+    await searchPage.searchForm.expectDefaultState();
   });
 
-  test.skip("Search again with an empty search field and validate not found message", async ({
+  test("keeps the search query and type in the URL after searching", async ({
+    page,
     searchPage,
   }) => {
-    await searchPage.searchField().fill("Luke Skywalker");
-    await searchPage.cardTitleByIndex(1)
-    await searchPage.searchField().clear();
-    await searchPage.searchButton().click();
+    await searchPage.searchPeople("Luke Skywalker");
+
+    await expect(page).toHaveURL(/searchType=people/);
+    await expect(page).toHaveURL(/query=Luke(\+|%20)Skywalker/);
   });
 
-  test("Search with partial name of a character and you should see matching list of search results", async ({
+  test("loads a shared people search URL directly", async ({
     searchPage,
   }) => {
-    await searchPage.searchField().fill("Skywalker");
-    await searchPage.searchButton().click();
-    await searchPage.isElementDisplayed(searchPage.cardTitleByIndex(3));
-    await searchPage.expectActualContainsExpected(
-      searchPage.cardTitleByIndex(3),
-      "Skywalker"
-    );
+    await searchPage.visit("/?searchType=people&query=Luke%20Skywalker");
+
+    await searchPage.characters.expectCardToMatch(0, {
+      name: "Luke Skywalker",
+      gender: "male",
+      birthYear: "19BBY",
+      eyeColor: "blue",
+      skinColor: "fair",
+    });
   });
 });
 
-test.afterEach(async ({ page }, testInfo) => {
-  console.log(`Finished ${testInfo.title} with status ${testInfo.status}`);
+test.describe("P1 Search negative flows @P1 @FullRegression", () => {
+  test("shows not found for an unknown people search", async ({
+    featureFlags,
+    mockSwapiEmptySearch,
+    searchPage,
+  }) => {
+    test.skip(!featureFlags.negativeSearch, "Negative search feature flag is disabled.");
 
-  if (testInfo.status !== testInfo.expectedStatus)
-    console.log(`Did not run as expected, ended up at ${page.url()}`);
+    if (testOptions.apiMode === "mock") {
+      await mockSwapiEmptySearch("people");
+    }
+
+    await searchPage.visit();
+    await searchPage.searchPeople("No Name");
+    await searchPage.notFoundMessage.expectVisible();
+  });
+
+  test("shows an API error when the people search service fails", async ({
+    featureFlags,
+    mockSwapiFailure,
+    searchPage,
+  }) => {
+    test.skip(!featureFlags.negativeSearch, "Negative search feature flag is disabled.");
+    test.skip(testOptions.apiMode !== "mock", "Failure scenarios require deterministic service mocks.");
+
+    await mockSwapiFailure("people", 500);
+
+    await searchPage.visit();
+    await searchPage.searchPeople("Luke Skywalker");
+    await searchPage.apiError.expectVisible();
+  });
+
+  test("treats malformed search responses as not found instead of crashing", async ({
+    featureFlags,
+    mockSwapiMalformedSearch,
+    searchPage,
+  }) => {
+    test.skip(!featureFlags.negativeSearch, "Negative search feature flag is disabled.");
+    test.skip(testOptions.apiMode !== "mock", "Malformed response scenarios require deterministic service mocks.");
+
+    await mockSwapiMalformedSearch("people");
+
+    await searchPage.visit();
+    await searchPage.searchPeople("Luke Skywalker");
+    await searchPage.notFoundMessage.expectVisible();
+  });
 });

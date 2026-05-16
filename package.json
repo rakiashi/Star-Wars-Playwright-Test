@@ -5,12 +5,27 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "serve": "ng serve",
     "build": "ng build --prod",
-    "test": "ng test",
+    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "test:watch": "ng test",
     "lint": "ng lint",
     "clean-reports": "npx ts-node integration-utils/types/init.ts",
-    "e2e-fullregression-runner-test-headless": "npm run clean-reports && BROWSER=chrome ENV=local HEADLESS=true npx playwright test --config=playwright.config.ts --grep=@FullRegression",
-    "e2e-fullregression-runner-test": "npm run clean-reports && ENV=local BROWSER=chrome HEADLESS=false npx playwright test --config=playwright.config.ts --grep=@FullRegression"
+    "e2e": "npm run e2e:mock",
+    "e2e:mock": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock --grep-invert='@Visual|@A11y'",
+    "e2e:mock:headed": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=false npx playwright test --config=playwright.config.ts --project=ui-mock",
+    "e2e:real": "npm run clean-reports && ENV=development API_MODE=real HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-real",
+    "e2e:p0": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock --grep=@P0",
+    "e2e:mobile": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock-mobile",
+    "e2e:cross-browser": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock-firefox --project=ui-mock-webkit",
+    "a11y": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock --grep=@A11y",
+    "visual": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock --grep=@Visual",
+    "visual:update": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock --grep=@Visual --update-snapshots",
+    "api:contract": "ENV=development API_MODE=real IGNORE_HTTPS_ERRORS=${IGNORE_HTTPS_ERRORS:-true} npx playwright test --config=playwright.config.ts --project=api-contract --grep=@APIContract",
+    "perf:k6": "API_BASE_URL=${API_BASE_URL:-https://swapi.dev/api} IGNORE_HTTPS_ERRORS=${IGNORE_HTTPS_ERRORS:-true} k6 run performance/k6/swapi-search.js",
+    "e2e-fullregression-runner-test-headless": "npm run clean-reports && BROWSER=chrome ENV=local API_MODE=mock HEADLESS=true npx playwright test --config=playwright.config.ts --project=ui-mock --grep=@FullRegression",
+    "e2e-fullregression-runner-test": "npm run clean-reports && ENV=local API_MODE=mock HEADLESS=false npx playwright test --config=playwright.config.ts --project=ui-mock --grep=@FullRegression",
+    "report": "npx playwright show-report"
   },
   "private": true,
   "dependencies": {
@@ -34,6 +49,7 @@
     "@angular/cli": "^16.0.0",
     "@angular/compiler-cli": "16.0.0",
     "@angular/language-service": "16.0.0",
+    "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.40.1",
     "@types/fs-extra": "^11.0.4",
     "@types/jasmine": "^4.3.1",
@@ -54,6 +70,7 @@
     "ts-essentials": "^9.4.1",
     "ts-node": "~10.9.1",
     "tslint": "~6.1.3",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "zod": "^4.4.3"
   }
 }
